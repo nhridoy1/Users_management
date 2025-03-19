@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Web;
 using Microsoft.Reporting.WebForms;
 using ReportService.Model;
 
@@ -18,7 +19,7 @@ namespace Users
 
         private void LoadReport()
         {
-            // Fetch Data
+
             DataTable dt = DatabaseHelper.ExecuteProcedureWithData("GetUsers", null);
             List<UserModel> users = new List<UserModel>();
 
@@ -44,28 +45,31 @@ namespace Users
             // Set Report Path
             ReportViewer1.LocalReport.ReportPath = @"C:\Users\Administrator\source\repos\Users\ReportService\Reports\UserReport.rdlc";
 
-            TimeZoneInfo bdTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Bangladesh Standard Time");
+            //string currentDate = DateTime.Today.ToString("dd-MMM-yyyy hh:mm:ss tt");
+            var currentDate = DateTime.UtcNow.AddHours(6).ToString("dd-MMM-yyyy hh:mm:ss tt"); 
 
-            // Convert UTC time to Bangladesh time
-            DateTime bdTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, bdTimeZone);
-
-            // Convert to a valid format as a string
-            string formattedBdTime = bdTime.ToString("yyyy-MM-dd"); // or "dd-MM-yyyy" based on your RDLC format
-
-
-
-            // Define Report Parameters
             ReportParameter[] parameters = new ReportParameter[]
             {
-                new ReportParameter("CompanyTitle", "My Company Name"),
-                new ReportParameter("CurrentDate", formattedBdTime, true)
-        };
+                new ReportParameter("CompanyTitle", "Pinnovation Company Ltd."),
+                new ReportParameter("CurrentDate", currentDate)
+            };
 
-            // Set Parameters in ReportViewer
+
             ReportViewer1.LocalReport.SetParameters(parameters);
-
-            // Refresh Report
             ReportViewer1.LocalReport.Refresh();
+
+            string mimeType, encoding, fileNameExtension;
+            Warning[] warnings;
+            string[] streamIds;
+
+            byte[] pdfBytes = ReportViewer1.LocalReport.Render("PDF", null, out mimeType, out encoding, out fileNameExtension,
+            out streamIds, out warnings);
+
+            HttpContext.Current.Response.Clear();
+            HttpContext.Current.Response.ContentType = "application/pdf";
+            HttpContext.Current.Response.AddHeader("Content-Disposition", $"inline; filename=ProductReport-{currentDate}.pdf");
+            HttpContext.Current.Response.BinaryWrite(pdfBytes);
+            HttpContext.Current.Response.End();
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-
+using System.Linq;
 using System.Web.UI.WebControls;
 
 namespace Users.Pages
@@ -29,6 +29,16 @@ namespace Users.Pages
             }
         }
 
+        protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           
+            int newPageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
+
+            GridViewUsers.PageSize = newPageSize;
+
+            LoadUsers();
+        }
+
 
         private void LoadUsers()
         {
@@ -36,6 +46,14 @@ namespace Users.Pages
             GridViewUsers.DataSource = dt;
             GridViewUsers.DataBind();
         }
+
+        protected void GridViewUsers_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GridViewUsers.PageIndex = e.NewPageIndex;
+
+            LoadUsers();
+        }
+
 
 
         protected void GridView_rowEdit(object sender, GridViewEditEventArgs e)

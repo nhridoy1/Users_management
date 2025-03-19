@@ -4,13 +4,26 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server" cssClass="container">
     <h1>Users Manage</h1>
+    <asp:DropDownList ID="ddlPageSize" runat="server" AutoPostBack="True" CssClass="form-select"
+    OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged">
+    <asp:ListItem Text="10" Value="10" Selected="True"></asp:ListItem>
+    <asp:ListItem Text="20" Value="20"></asp:ListItem>
+    <asp:ListItem Text="30" Value="30"></asp:ListItem>
+    <asp:ListItem Text="50" Value="50"></asp:ListItem>
+    <asp:ListItem Text="100" Value="100"></asp:ListItem>
+</asp:DropDownList>
+
     <asp:GridView ID="GridViewUsers" runat="server" AutoGenerateColumns="False" CssClass="gridview table table-bordered table-primary" 
         OnRowEditing="GridView_rowEdit"
         OnRowUpdating="GridView_rowUpdate"
         OnRowDeleting="GridViewUsers_RowDeleting"
         OnDelete="GridViewUsers_RowDeleting"
         OnRowCancelingEdit="GridViewUsers_rowCancelEdit"
-        DataKeyNames="Id">
+        AllowPaging="True" 
+    PageSize="10" 
+    OnPageIndexChanging="GridViewUsers_PageIndexChanging"
+        DataKeyNames="Id"
+        >
 
         <Columns>
 
@@ -83,7 +96,9 @@
 
 
         </Columns>
+        <PagerStyle CssClass="gvPagination" />
     </asp:GridView>
+    
     <asp:Button ID="PrintUserList" Text="Print" runat="server" OnClick="btnPrintUserList1" />
 
 </asp:Content>

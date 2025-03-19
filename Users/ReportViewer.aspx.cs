@@ -38,20 +38,22 @@ namespace Users
             // Clear existing report data
             ReportViewer1.LocalReport.DataSources.Clear();
 
-            // Add dataset to ReportViewer
             ReportDataSource rds = new ReportDataSource("DataSet1", users);
             ReportViewer1.LocalReport.DataSources.Add(rds);
 
-            // Set Report Path
             ReportViewer1.LocalReport.ReportPath = @"C:\Users\Administrator\source\repos\Users\ReportService\Reports\UserReport.rdlc";
 
-            //string currentDate = DateTime.Today.ToString("dd-MMM-yyyy hh:mm:ss tt");
-            var currentDate = DateTime.UtcNow.AddHours(6).ToString("dd-MMM-yyyy hh:mm:ss tt"); 
+        
+            var currentDate = DateTime.UtcNow.AddHours(6).ToString("dd-MMM-yyyy hh:mm:ss tt");
+
+            string logoPath = new Uri(Server.MapPath("~/logo.jpeg")).AbsoluteUri;
+            ReportViewer1.LocalReport.EnableExternalImages = true;
 
             ReportParameter[] parameters = new ReportParameter[]
             {
                 new ReportParameter("CompanyTitle", "Pinnovation Company Ltd."),
-                new ReportParameter("CurrentDate", currentDate)
+                new ReportParameter("CurrentDate", currentDate),
+                new ReportParameter("logo", logoPath)
             };
 
 
